@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Images Grid View{% endblock %}
+
+{% block content_title %}Images Grid View{% endblock %}
+
+
+  {% block content %}
+
+  {% for filename in all_images %}
+      {% if filename %}  <!-- just checking -->
+          <img src="{{ filename }}"/>
+      {% endif %}
+  {% endfor %}
+{% endblock %}
