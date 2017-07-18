@@ -1,6 +1,7 @@
 from flask import Flask,flash,g, request,session
 from config import Configuration
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import MetaData
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager #allows to execute commands from the command line
 from flask_login import LoginManager, current_user
@@ -9,7 +10,19 @@ from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.config.from_object(Configuration)
-db = SQLAlchemy(app)
+
+#this part needed to ommit ALTER constraint_error
+convention = {
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+}
+
+metadata = MetaData(naming_convention=convention)
+
+db = SQLAlchemy(app,metadata=metadata)
 
 #migrate needed in order to be able to modify existing models
 migrate = Migrate(app, db)

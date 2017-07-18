@@ -73,7 +73,7 @@ class Tag(db.Model):
     def __repr__(self):
         return '<Tag %s>' % self.name
 
-class User(db.Model,UserMixin):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(64), unique=True)
     password_hash = db.Column(db.String(255))
@@ -81,6 +81,7 @@ class User(db.Model,UserMixin):
     slug = db.Column(db.String(64), unique=True)
     active = db.Column(db.Boolean, default=True)
     created_timestamp = db.Column(db.DateTime, default=datetime.datetime.now)
+    admin = db.Column(db.Boolean, default=False)
     entries = db.relationship('Entry', backref='author', lazy='dynamic')
 
     def __init__(self, *args, **kwargs):
@@ -106,6 +107,9 @@ class User(db.Model,UserMixin):
 
     def is_anonymous(self):
         return False
+
+    def is_admin(self):
+        return self.admin
 
     @staticmethod
     def make_password(plaintext):
